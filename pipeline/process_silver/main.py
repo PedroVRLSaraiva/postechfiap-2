@@ -6,6 +6,7 @@ try:
     from pipeline.common.gcs_utils import read_camada_latest, write_camada_parquet
     from pipeline.process_silver.quality import validar_dataframe
     from pipeline.process_silver.transform import (
+        decodificar_rede,
         enriquecer_com_geografia,
         integrar_resultado_com_meta,
         padronizar_id_municipio,
@@ -16,6 +17,7 @@ except ImportError:
     from gcs_utils import read_camada_latest, write_camada_parquet
     from quality import validar_dataframe
     from transform import (
+        decodificar_rede,
         enriquecer_com_geografia,
         integrar_resultado_com_meta,
         padronizar_id_municipio,
@@ -41,10 +43,13 @@ def process_silver(request):
     alunos = read_camada_latest(bucket_name, "bronze", "alunos")
     geo = read_camada_latest(bucket_name, "bronze", "municipio_geo")
 
-    # 2) Município: limpa, padroniza a chave, junta com a meta e com o nome/UF
+    # 2) Município: limpa, padroniza a chave, decodifica "rede" (código -> texto,
+    # necessário para o cruzamento com a meta funcionar) e junta com a meta e com
+    # o nome/UF
     municipio = remover_linhas_duplicadas(municipio, ["ano", "id_municipio", "rede"])
     municipio = preencher_valores_ausentes_numericos(municipio, ["taxa_alfabetizacao"])
     municipio = padronizar_id_municipio(municipio)
+    municipio = decodificar_rede(municipio)
     meta_municipio = padronizar_id_municipio(meta_municipio)
     municipio_integrado = integrar_resultado_com_meta(
         municipio, meta_municipio, chaves=["ano", "id_municipio", "rede"]
@@ -54,6 +59,7 @@ def process_silver(request):
     # 3) UF: mesma ideia, mas sem geografia (a própria tabela "uf" já tem sigla_uf)
     uf = remover_linhas_duplicadas(uf, ["ano", "sigla_uf", "rede"])
     uf = preencher_valores_ausentes_numericos(uf, ["taxa_alfabetizacao"])
+    uf = decodificar_rede(uf)
     uf_integrado = integrar_resultado_com_meta(uf, meta_uf, chaves=["ano", "sigla_uf", "rede"])
 
     # 4) Brasil: essa tabela fonte já vem com resultado real + meta juntos, então só
@@ -61,10 +67,12 @@ def process_silver(request):
     brasil_integrado = remover_linhas_duplicadas(meta_brasil, ["ano", "rede"])
     brasil_integrado = preencher_valores_ausentes_numericos(brasil_integrado, ["taxa_alfabetizacao"])
 
-    # 5) Alunos: limpeza dos microdados individuais
+    # 5) Alunos: limpeza dos microdados individuais (decodifica "rede" também, só
+    # por padronização/legibilidade — esta tabela não é cruzada com nenhuma meta)
     alunos_limpo = remover_linhas_duplicadas(alunos, ["ano", "id_aluno"])
     alunos_limpo = preencher_valores_ausentes_numericos(alunos_limpo, ["proficiencia"])
     alunos_limpo = padronizar_id_municipio(alunos_limpo)
+    alunos_limpo = decodificar_rede(alunos_limpo)
 
     # 6) Portão de qualidade: validamos com Great Expectations o dataset município
     # (o mais granular e citado explicitamente como exemplo de Gold no desafio).

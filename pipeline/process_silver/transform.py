@@ -1,5 +1,33 @@
 import pandas as pd
 
+# Mapeamento código -> texto da coluna "rede", confirmado consultando a tabela
+# `dicionario` (bronze) do próprio dataset fonte. É o mesmo mapeamento nas 3 tabelas
+# de resultado real (municipio, uf, alunos) — por isso um único dicionário serve
+# para as três. As tabelas de meta (meta_alfabetizacao_*) já vêm com "rede" como
+# texto (ex.: "Municipal"), não como código — por isso o cruzamento entre resultado
+# real e meta só funciona DEPOIS de decodificar o resultado real para o mesmo texto.
+MAPEAMENTO_REDE = {
+    "0": "Total (Federal, Estadual, Municipal e Privada)",
+    "1": "Federal",
+    "2": "Estadual",
+    "3": "Municipal",
+    "4": "Privada",
+    "5": "Pública (Estadual e Municipal)",
+    "6": "Pública (Federal, Estadual e Municipal)",
+}
+
+
+def decodificar_rede(df: pd.DataFrame, coluna: str = "rede") -> pd.DataFrame:
+    """Traduz o código numérico da coluna 'rede' (ex.: "3") para o texto
+    correspondente (ex.: "Municipal"), usando o mapeamento fixo acima. Sem isso, o
+    cruzamento com as tabelas de meta (que já usam texto) não encontra nenhuma
+    correspondência — foi um bug real encontrado ao conferir os dados no BigQuery
+    após o primeiro deploy do process_gold.
+    """
+    df = df.copy()
+    df[coluna] = df[coluna].astype(str).str.strip().map(MAPEAMENTO_REDE)
+    return df
+
 
 def remover_linhas_duplicadas(df: pd.DataFrame, colunas_chave: list) -> pd.DataFrame:
     """Remove linhas repetidas com base numa chave (ex.: ano+id_municipio+rede),
