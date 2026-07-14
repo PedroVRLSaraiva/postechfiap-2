@@ -76,6 +76,13 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
   padrão de só 3 minutos para alvos HTTP — menor que os 540s que a função pode levar —
   corrigido com `--attempt-deadline=540s`. Execução forçada testada com sucesso: todas
   as 8 tabelas atualizadas no bucket, sem erros nos logs da function nem do job.
+- **Tasks 10-12 concluídas (Fase 3, Streaming):** `scripts/publish_stream_events.py`
+  (publisher com TDD) e `pipeline/ingest_stream/main.py` (Cloud Function consumidora,
+  TDD) implementados. Deploy real exigiu ativar mais uma API (`eventarc.googleapis.com`,
+  usada por triggers de evento como Pub/Sub em Cloud Functions Gen2). Teste real:
+  publicados 5 eventos simulados, todos consumidos automaticamente pela função,
+  gerando 5 partições `dt=` distintas (histórico preservado) + `latest/` atualizado,
+  sem erros nos logs.
 - Decisão: seção "Aplicação em IA" do README será **apenas documentada** (sem treinar
   modelo de fato). O desafio pede para explicar o potencial de uso da camada Gold, não
   exige o modelo em si — mantém o foco no que é obrigatório: a pipeline.
