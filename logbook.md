@@ -218,3 +218,19 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
   reconfirmado com sucesso: 3 tabelas analíticas carregadas no BigQuery
   (`indicador_por_municipio`, `comparacao_meta_resultado`, `evolucao_temporal`), sem
   erros nos logs.
+- **Task 20 concluída:** instalado o componente `alpha` do gcloud CLI (necessário
+  para os comandos de Monitoring). Criado canal de notificação por e-mail
+  (`pedrovieirarota@gmail.com`) e política de alerta
+  (`monitoring/alert-policy-falhas.json`) que dispara quando qualquer uma das 4
+  Cloud Functions (`ingest-batch`, `ingest-stream`, `process-silver`, `process-gold`)
+  registra um log de severidade ERROR. Confirmado ativo (`enabled: True`).
+- **Task 21 concluída:** teste do alerta forçando uma falha real. Primeira tentativa
+  de "quebrar" a função (`gcloud functions deploy ... --update-env-vars=...` sem
+  `--source`/`--entry-point`) falhou silenciosamente — o comando deu erro de
+  validação e a função continuou com a config antiga, então rodou a ingestão real
+  várias vezes sem erro (só desperdiçou tempo, sem causar problema). Corrigido
+  refazendo o deploy com todos os parâmetros. Com o `BUCKET_NAME` realmente apontando
+  para um bucket inexistente, a execução falhou rápido (HTTP 500, ~1.6s) e o log de
+  erro foi confirmado via `severity>=ERROR`. E-mail de alerta chegou com sucesso na
+  caixa de entrada, confirmando o monitoramento ponta a ponta. Configuração revertida
+  para o bucket correto logo em seguida.
