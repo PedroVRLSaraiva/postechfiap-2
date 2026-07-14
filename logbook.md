@@ -51,6 +51,26 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
   — query no BigQuery público e carga de DataFrame como tabela. Branch
   `feature/common-utils` (PR #2) mergeada em `main` (branch mantida, sem
   `--delete-branch`).
+- **Task 7 concluída:** `pipeline/ingest_batch/main.py` implementado com TDD (1 teste)
+  — query nas 8 tabelas fonte (as 6 exigidas + `dicionario` + tabela de geografia
+  `br_bd_diretorios_brasil.municipio`), com seleção explícita de colunas (não
+  `SELECT *`) por FinOps.
+- **Task 8 concluída — deploy de `ingest-batch`:** durante o deploy real, a API
+  `run.googleapis.com` precisou ser ativada manualmente (não estava habilitada apesar
+  de constar como ativada no console na Task 1). Depois, dois problemas reais
+  encontrados e corrigidos:
+  - Estouro de memória: a tabela `alunos` tem ~3,87 milhões de linhas (~256 MB
+    comprimidos no BigQuery); como DataFrame do pandas isso passa de 512 MiB. Corrigido
+    aumentando a função para `--memory=2Gi`.
+    Preventivamente, `process-silver` (que também lê `alunos`) foi ajustado no plano
+    para os mesmos 2Gi/540s, já que sofreria do mesmo problema.
+  - Timeout: com mais memória, a função ainda estourava `--timeout=300s` processando
+    as 8 tabelas em sequência. Corrigido para `--timeout=540s`.
+  - Teste manual final: as 8 tabelas processadas com sucesso
+    (`alunos: 3.867.999 linhas`, `municipio: 23.995`, `municipio_geo: 5.571`, etc.),
+    confirmado no bucket com a estrutura `dt=`/`latest` funcionando.
+  - Também descoberto (e usado para dimensionar a memória): contagem/tamanho real das
+    tabelas via `INFORMATION_SCHEMA.__TABLES__` do BigQuery.
 - Decisão: seção "Aplicação em IA" do README será **apenas documentada** (sem treinar
   modelo de fato). O desafio pede para explicar o potencial de uso da camada Gold, não
   exige o modelo em si — mantém o foco no que é obrigatório: a pipeline.

@@ -2,8 +2,17 @@ import os
 
 import functions_framework
 
-from pipeline.common.bq_utils import query_public_table
-from pipeline.common.gcs_utils import write_camada_parquet
+# Este import "tenta dos dois jeitos" porque este mesmo arquivo é usado em dois
+# contextos: (1) localmente, rodando os testes com pytest a partir da raiz do
+# repositório, onde `pipeline.common` existe como pacote; e (2) depois de deployado
+# como Cloud Function, onde só existe o que está dentro desta pasta (por isso
+# copiamos gcs_utils.py/bq_utils.py para cá, como arquivos "vizinhos" de main.py).
+try:
+    from pipeline.common.bq_utils import query_public_table
+    from pipeline.common.gcs_utils import write_camada_parquet
+except ImportError:
+    from bq_utils import query_public_table
+    from gcs_utils import write_camada_parquet
 
 # TABELAS_BATCH mapeia "nome da tabela na nossa pipeline" -> "query SQL que busca ela
 # no projeto público basedosdados". Guardar assim (em vez de repetir a mesma lógica
