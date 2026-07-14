@@ -759,12 +759,21 @@ gcloud functions deploy ingest-batch \
   --entry-point=ingest_batch \
   --trigger-http \
   --allow-unauthenticated \
-  --memory=512Mi \
-  --timeout=300s \
+  --memory=2Gi \
+  --timeout=540s \
   --set-env-vars=BUCKET_NAME=SEU_PROJECT_ID-pipeline-alfabetizacao,PROJECT_ID=SEU_PROJECT_ID
 ```
 Esse comando demora alguns minutos na primeira vez (o Cloud Build compila a imagem).
 Expected, no final: `url: https://...` (a URL da função).
+
+> **Nota de aprendizado (descoberta na execução real):** a tabela `alunos` tem quase
+> 3,9 milhões de linhas. Com `--memory=512Mi` (valor inicial deste plano) a função
+> estourava o limite de memória ("Memory limit of 512 MiB exceeded"), porque um
+> DataFrame do pandas na memória ocupa bem mais espaço que o mesmo dado comprimido
+> no BigQuery. Com `--timeout=300s` a função também não tinha tempo suficiente para
+> processar as 8 tabelas. Por isso os valores acima já vêm ajustados para
+> `--memory=2Gi` e `--timeout=540s` — ainda dentro do free tier, já que é um job que
+> roda poucos minutos por dia.
 
 > Nota de segurança: usamos `--allow-unauthenticated` para simplificar (o Cloud
 > Scheduler chama a função sem precisar de token). Como os dados são públicos e o
@@ -1628,12 +1637,14 @@ gcloud functions deploy process-silver \
   --entry-point=process_silver \
   --trigger-http \
   --allow-unauthenticated \
-  --memory=1Gi \
-  --timeout=300s \
+  --memory=2Gi \
+  --timeout=540s \
   --set-env-vars=BUCKET_NAME=SEU_PROJECT_ID-pipeline-alfabetizacao
 ```
-(Memória maior aqui porque o Great Expectations consome mais RAM que as outras
-funções.)
+(Memória e timeout no mesmo patamar do `ingest-batch`: esta função também lê a
+tabela `alunos`, que tem ~3,9 milhões de linhas — na Task 8 descobrimos na prática
+que 512Mi/300s não é suficiente para esse volume. Ajustado preventivamente aqui
+para não repetir o mesmo erro.)
 
 - [ ] **Passo 4: Criar o Cloud Scheduler job**
 
