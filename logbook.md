@@ -114,6 +114,19 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
   do plano esclarecendo que a validação Great Expectations roda só sobre
   `municipio_integrado` (não os outros 3 datasets Silver) — trade-off consciente de
   escopo/tempo, não uma lacuna.
+- Iniciada a execução do plano (skill `executing-plans`), guiada, tarefa por tarefa.
+- **Task 1 concluída:** projeto GCP criado (`SEU_PROJECT_ID` = `fiapfase2`), billing
+  vinculado, APIs ativadas (BigQuery, Cloud Storage, Cloud Functions, Cloud Build,
+  Cloud Run, Pub/Sub, Cloud Scheduler, Cloud Logging, Cloud Monitoring).
+- **Task 2 concluída:** Google Cloud CLI instalado via Homebrew (`gcloud-cli` 575.0.1).
+  Autenticado como `pedrovieirarota@gmail.com` (`gcloud auth login` +
+  `gcloud auth application-default login`); projeto padrão definido como `fiapfase2`
+  (`gcloud config set project`); quota project do ADC corrigido para bater com o
+  projeto ativo.
+- **Task 3 concluída:** criados e confirmados os três recursos de infraestrutura no
+  GCP: bucket GCS `gs://fiapfase2-pipeline-alfabetizacao` (região us-central1),
+  dataset BigQuery `fiapfase2:gold_alfabetizacao` (região us-central1), tópico Pub/Sub
+  `alfabetizacao-eventos`.
 - Decisão: ingestão da camada Bronze via **query direta no BigQuery público da Base dos
   Dados** (projeto `basedosdados`), gravando o resultado como Parquet no GCS. Evita
   download manual/parsing de CSV e é mais fiel ao dado fonte, aproveitando que já
