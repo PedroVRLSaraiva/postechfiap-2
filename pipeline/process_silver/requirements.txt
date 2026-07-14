@@ -1,0 +1,6 @@
+pandas
+great_expectations==1.19.0
+google-cloud-storage
+gcsfs
+db-dtypes
+functions-framework

@@ -83,6 +83,14 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
   publicados 5 eventos simulados, todos consumidos automaticamente pela função,
   gerando 5 partições `dt=` distintas (histórico preservado) + `latest/` atualizado,
   sem erros nos logs.
+- **Tasks 13-16 concluídas (Fase 4, Silver):** `transform.py` (limpeza/integração,
+  5 testes), `quality.py` (Great Expectations, 2 testes) e `main.py` (glue com
+  portão de qualidade, 2 testes) implementados com TDD — suíte completa em 18 testes,
+  todos passando. Deploy real com `--memory=2Gi --timeout=540s` (mesmo ajuste do
+  ingest-batch, por causa da tabela `alunos`) funcionou de primeira. Cloud Scheduler
+  `job-process-silver` criado (`10 3 * * *`, 10min depois do batch). Teste manual:
+  4 tabelas Silver geradas (`municipio_integrado`: 23.995 linhas, batendo com a
+  contagem real da fonte), sem erros nos logs.
 - Decisão: seção "Aplicação em IA" do README será **apenas documentada** (sem treinar
   modelo de fato). O desafio pede para explicar o potencial de uso da camada Gold, não
   exige o modelo em si — mantém o foco no que é obrigatório: a pipeline.
