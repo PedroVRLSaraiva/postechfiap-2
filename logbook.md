@@ -77,6 +77,43 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
   `process_gold`) são acionadas por três jobs do Cloud Scheduler em horários
   escalonados, em vez de encadeamento por eventos — mais simples de entender e
   depurar por quem não tem experiência prévia.
+- Repositório Git inicializado localmente (branch `main`), com `.gitignore` (excluindo
+  credenciais GCP e o arquivo de transcrições de aula) e primeiro commit contendo o PDF
+  do desafio, o spec de design e este logbook.
+- Remote `origin` adicionado apontando para
+  `https://github.com/PedroVRLSaraiva/postechfiap-2.git`.
+- Push inicial feito: branch `main` publicada no GitHub (`origin/main`).
+- Iniciada a skill `writing-plans` para transformar o spec em plano de execução.
+- Investigado o schema real das tabelas fonte no BigQuery público (via console do
+  usuário, projeto `basedosdados`), em vez de adivinhar nomes de coluna. Resultado:
+  - Dataset `basedosdados.br_inep_avaliacao_alfabetizacao` contém as 6 tabelas exigidas
+    pelo desafio: `alunos`, `meta_alfabetizacao_brasil`, `meta_alfabetizacao_municipio`,
+    `meta_alfabetizacao_uf`, `municipio`, `uf` — mais uma tabela auxiliar `dicionario`
+    (decodifica valores categóricos como `rede`).
+  - Chaves de junção identificadas: `id_municipio` (STRING) liga `alunos` ↔ `municipio`
+    ↔ `meta_alfabetizacao_municipio`; `sigla_uf` liga `uf` ↔ `meta_alfabetizacao_uf`;
+    `meta_alfabetizacao_brasil` só tem `ano`+`rede` (é agregado nacional sem chave
+    geográfica).
+  - Nenhuma tabela do dataset tem nome de município/UF por extenso — confirmado que
+    `basedosdados.br_bd_diretorios_brasil.municipio` (tabela de referência geográfica
+    padrão da própria plataforma Base dos Dados, não é o enriquecimento externo opcional
+    que foi descartado) tem `id_municipio`, `nome`, `sigla_uf`, `nome_uf`, `id_uf` — será
+    usada só para traduzir código→nome no Silver/Gold.
+- Antes de escrever o código do plano, testado localmente (venv temporária) que
+  `great_expectations==1.19.0` + `pandas` + `google-cloud-bigquery` +
+  `google-cloud-storage` + `google-cloud-pubsub` + `gcsfs` + `functions-framework` +
+  `db-dtypes` instalam juntos sem conflito, e confirmada a API real do Great
+  Expectations 1.19 (`gx.get_context(mode="ephemeral")`,
+  `context.data_sources.add_pandas(...)`, `ExpectCompoundColumnsToBeUnique`, etc.)
+  rodando contra DataFrames de teste — para não colocar código não testado no plano.
+- Plano de execução completo escrito em
+  `docs/superpowers/plans/2026-07-13-pipeline-alfabetizacao-plan.md`, com 24 tarefas
+  organizadas em 8 fases (setup, common utils, bronze/batch, streaming, silver,
+  gold, monitoramento, FinOps+README, vídeo), cada uma com branch própria e PR.
+  Autorevisão feita: adicionado comentário explícito no `process_silver/main.py`
+  do plano esclarecendo que a validação Great Expectations roda só sobre
+  `municipio_integrado` (não os outros 3 datasets Silver) — trade-off consciente de
+  escopo/tempo, não uma lacuna.
 - Decisão: ingestão da camada Bronze via **query direta no BigQuery público da Base dos
   Dados** (projeto `basedosdados`), gravando o resultado como Parquet no GCS. Evita
   download manual/parsing de CSV e é mais fiel ao dado fonte, aproveitando que já
