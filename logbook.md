@@ -241,3 +241,20 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
   no bucket GCS (5,6% do free tier de 5 GB/mês, região us-central1). Cloud Scheduler
   com exatamente 3 jobs (limite gratuito de 3 jobs/conta). Custo estimado: R$0,00,
   dentro do free tier em todos os serviços usados.
+- **Task 23 concluída:** README completo escrito, cobrindo todos os itens exigidos
+  pelo desafio (contexto, arquitetura com diagrama, fluxo de dados, tecnologias e
+  justificativas, decisões arquiteturais/trade-offs — incluindo o bug real de
+  decodificação de `rede` — qualidade de dados, monitoramento, FinOps com custo real
+  medido, aplicação em IA, estrutura do repositório, uso de Git e como rodar
+  localmente). Revisado lendo do zero antes do commit, sem placeholders.
+- **Task 24 concluída:** roteiro do vídeo executivo escrito em
+  `docs/roteiro-video-executivo.md` (problema de negócio, arquitetura da solução,
+  valor para análises educacionais, potencial de IA — linguagem executiva, dentro
+  de 5 minutos). A gravação em si fica a cargo do usuário.
+- **Plano de execução concluído: 24/24 tarefas.** Pipeline híbrida rodando de
+  ponta a ponta no GCP (projeto `fiapfase2`): ingestão batch (agendada) e streaming
+  (via Pub/Sub) → Bronze → Silver (limpeza + Great Expectations + integração) →
+  Gold (BigQuery), com monitoramento/alertas ativos e testado, custo real medido em
+  ~R$0,00, 23 testes automatizados passando, 8 Pull Requests mergeadas em `main`
+  (branches preservadas), e README + roteiro de vídeo prontos. Falta apenas o
+  usuário gravar e entregar o vídeo.
