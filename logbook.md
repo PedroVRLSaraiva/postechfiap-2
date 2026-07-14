@@ -127,6 +127,13 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
   GCP: bucket GCS `gs://fiapfase2-pipeline-alfabetizacao` (região us-central1),
   dataset BigQuery `fiapfase2:gold_alfabetizacao` (região us-central1), tópico Pub/Sub
   `alfabetizacao-eventos`.
+- **Task 4 concluída:** estrutura de pastas criada (`pipeline/{common,ingest_batch,
+  ingest_stream,process_silver,process_gold}`, `scripts/`, `tests/`). Venv recriada
+  com Python 3.12 (a instalação do `gcloud-cli` via Homebrew havia trazido Python 3.14
+  como padrão, incompatível com `great_expectations==1.19.0`, que exige `<3.14`).
+  `requirements.txt` raiz instalado sem conflitos. Branch `chore/setup-gcp-and-repo`
+  criada, commitada, PR #1 aberta e mergeada em `main` (mantendo a branch, por
+  preferência do usuário — não deletar branches após merge neste projeto).
 - Decisão: ingestão da camada Bronze via **query direta no BigQuery público da Base dos
   Dados** (projeto `basedosdados`), gravando o resultado como Parquet no GCS. Evita
   download manual/parsing de CSV e é mais fiel ao dado fonte, aproveitando que já
