@@ -1267,6 +1267,16 @@ def integrar_resultado_com_meta(df_resultado: pd.DataFrame, df_meta: pd.DataFram
     return df_resultado.merge(df_meta, on=chaves, how="left", suffixes=("", "_meta"))
 ```
 
+> **Nota de aprendizado (descoberta na execução real, após rodar process-gold e
+> conferir os dados no BigQuery):** a coluna `rede` vem como **código numérico**
+> ("3") nas tabelas de resultado (`municipio`, `uf`, `alunos`), mas como **texto**
+> ("Municipal") nas tabelas de meta — confirmado consultando a tabela `dicionario`.
+> Sem decodificar isso antes do `integrar_resultado_com_meta`, o cruzamento falha
+> silenciosamente (toda linha de meta fica nula). A correção foi adicionar uma
+> função `decodificar_rede` (mapeamento fixo, baseado no `dicionario`) chamada antes
+> do merge em `process_silver/main.py`. Veja o `logbook.md` para o mapeamento
+> completo e a investigação.
+
 - [ ] **Passo 4: Rodar e confirmar que passa**
 
 ```bash
