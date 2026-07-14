@@ -71,6 +71,11 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
     confirmado no bucket com a estrutura `dt=`/`latest` funcionando.
   - Também descoberto (e usado para dimensionar a memória): contagem/tamanho real das
     tabelas via `INFORMATION_SCHEMA.__TABLES__` do BigQuery.
+- **Task 9 concluída:** job `job-ingest-batch` criado no Cloud Scheduler (cron
+  `0 3 * * *`, horário UTC). Descoberto que o Cloud Scheduler tem um "attempt deadline"
+  padrão de só 3 minutos para alvos HTTP — menor que os 540s que a função pode levar —
+  corrigido com `--attempt-deadline=540s`. Execução forçada testada com sucesso: todas
+  as 8 tabelas atualizadas no bucket, sem erros nos logs da function nem do job.
 - Decisão: seção "Aplicação em IA" do README será **apenas documentada** (sem treinar
   modelo de fato). O desafio pede para explicar o potencial de uso da camada Gold, não
   exige o modelo em si — mantém o foco no que é obrigatório: a pipeline.
