@@ -234,3 +234,10 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
   erro foi confirmado via `severity>=ERROR`. E-mail de alerta chegou com sucesso na
   caixa de entrada, confirmando o monitoramento ponta a ponta. Configuração revertida
   para o bucket correto logo em seguida.
+- **Task 22 concluída:** em vez de conferir o relatório de Billing do console (que
+  costuma levar 24-48h para consolidar o uso do dia), medido o consumo real via
+  `INFORMATION_SCHEMA.JOBS_BY_PROJECT` do BigQuery e `gcloud storage du`: 255,5 MB
+  processados no BigQuery nas últimas 24h (0,024% do free tier de 1 TB/mês) e 287 MB
+  no bucket GCS (5,6% do free tier de 5 GB/mês, região us-central1). Cloud Scheduler
+  com exatamente 3 jobs (limite gratuito de 3 jobs/conta). Custo estimado: R$0,00,
+  dentro do free tier em todos os serviços usados.
