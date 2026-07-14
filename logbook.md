@@ -218,3 +218,9 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
   reconfirmado com sucesso: 3 tabelas analíticas carregadas no BigQuery
   (`indicador_por_municipio`, `comparacao_meta_resultado`, `evolucao_temporal`), sem
   erros nos logs.
+- **Task 20 concluída:** instalado o componente `alpha` do gcloud CLI (necessário
+  para os comandos de Monitoring). Criado canal de notificação por e-mail
+  (`pedrovieirarota@gmail.com`) e política de alerta
+  (`monitoring/alert-policy-falhas.json`) que dispara quando qualquer uma das 4
+  Cloud Functions (`ingest-batch`, `ingest-stream`, `process-silver`, `process-gold`)
+  registra um log de severidade ERROR. Confirmado ativo (`enabled: True`).
