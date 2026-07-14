@@ -188,3 +188,33 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
   Dados** (projeto `basedosdados`), gravando o resultado como Parquet no GCS. Evita
   download manual/parsing de CSV e é mais fiel ao dado fonte, aproveitando que já
   estamos no GCP.
+- **Nota:** as entradas deste logbook não estão 100% em ordem cronológica de arquivo
+  (algumas foram inseridas no meio por engano, ancoradas num ponto fixo do texto em
+  vez do fim real do arquivo). O conteúdo está completo, só a ordem de leitura no
+  arquivo não reflete perfeitamente a ordem real dos eventos. A partir daqui, novas
+  entradas são sempre acrescentadas no fim de verdade.
+- **Bug real encontrado e corrigido durante a Task 19 (deploy de process-gold):**
+  ao consultar `fiapfase2.gold_alfabetizacao.indicador_por_municipio` no BigQuery
+  depois do primeiro deploy, `meta_alfabetizacao_2024` vinha sempre `null`. Investigado
+  comparando `SELECT DISTINCT ano, rede` nas tabelas `municipio` (rede = código
+  numérico: "0","2","3","5") e `meta_alfabetizacao_municipio` (rede = texto:
+  "Municipal") — os dois formatos nunca batiam no cruzamento. Confirmado o
+  mapeamento código→texto consultando a tabela `dicionario`
+  (`0=Total, 1=Federal, 2=Estadual, 3=Municipal, 4=Privada, 5=Pública (Estadual e
+  Municipal), 6=Pública (Federal, Estadual e Municipal)` — igual nas 3 tabelas de
+  resultado real: `municipio`, `uf`, `alunos`). Corrigido adicionando
+  `decodificar_rede()` em `pipeline/process_silver/transform.py`, chamada antes de
+  `integrar_resultado_com_meta` para `municipio`, `uf` e `alunos`. Testes atualizados
+  para usar códigos numéricos realistas nos dados fake (em vez de texto direto).
+  Reimplantado `process-silver` e `process-gold`, e reconferido no BigQuery: a
+  rede "Municipal" agora cruza corretamente com a meta (10.464 de 10.896 linhas
+  dessa rede têm meta preenchida; as demais redes — Estadual, Pública, Total — não
+  têm meta mesmo, pois o programa "Compromisso Nacional Criança Alfabetizada" só
+  define metas para a rede Municipal, então os `null` restantes são esperados, não
+  um bug).
+- **Task 19 concluída:** deploy de `process-gold` (memória/timeout padrão do plano,
+  512Mi/300s, suficiente pois esta função não lê a tabela `alunos`). Cloud Scheduler
+  `job-process-gold` criado (`20 3 * * *`). Após a correção do bug de `rede` acima,
+  reconfirmado com sucesso: 3 tabelas analíticas carregadas no BigQuery
+  (`indicador_por_municipio`, `comparacao_meta_resultado`, `evolucao_temporal`), sem
+  erros nos logs.

@@ -8,23 +8,26 @@ def _bronze_fake(nome_tabela):
     suficiente para testar se process_silver liga as peças certas — não testa a
     qualidade dos dados em si (isso já foi testado em test_silver_quality.py)."""
     dados = {
+        # "rede": "3" é o código real usado nas tabelas de resultado (não texto) —
+        # ele passa pela decodificar_rede() dentro do process_silver antes de
+        # cruzar com as tabelas de meta, que já usam "Municipal" como texto.
         "uf": pd.DataFrame({
-            "ano": [2024], "sigla_uf": ["SP"], "rede": ["municipal"], "taxa_alfabetizacao": [85.0],
+            "ano": [2024], "sigla_uf": ["SP"], "rede": ["3"], "taxa_alfabetizacao": [85.0],
         }),
         "municipio": pd.DataFrame({
-            "ano": [2024], "id_municipio": ["3550308"], "rede": ["municipal"], "taxa_alfabetizacao": [85.0],
+            "ano": [2024], "id_municipio": ["3550308"], "rede": ["3"], "taxa_alfabetizacao": [85.0],
         }),
         "meta_alfabetizacao_brasil": pd.DataFrame({
-            "ano": [2024], "rede": ["municipal"], "taxa_alfabetizacao": [80.0], "meta_alfabetizacao_2024": [82.0],
+            "ano": [2024], "rede": ["Municipal"], "taxa_alfabetizacao": [80.0], "meta_alfabetizacao_2024": [82.0],
         }),
         "meta_alfabetizacao_uf": pd.DataFrame({
-            "ano": [2024], "sigla_uf": ["SP"], "rede": ["municipal"], "meta_alfabetizacao_2024": [88.0],
+            "ano": [2024], "sigla_uf": ["SP"], "rede": ["Municipal"], "meta_alfabetizacao_2024": [88.0],
         }),
         "meta_alfabetizacao_municipio": pd.DataFrame({
-            "ano": [2024], "id_municipio": ["3550308"], "rede": ["municipal"], "meta_alfabetizacao_2024": [90.0],
+            "ano": [2024], "id_municipio": ["3550308"], "rede": ["Municipal"], "meta_alfabetizacao_2024": [90.0],
         }),
         "alunos": pd.DataFrame({
-            "ano": [2024], "id_aluno": ["1"], "id_municipio": ["3550308"], "proficiencia": [750.0],
+            "ano": [2024], "id_aluno": ["1"], "id_municipio": ["3550308"], "rede": ["3"], "proficiencia": [750.0],
         }),
         "municipio_geo": pd.DataFrame({
             "id_municipio": ["3550308"], "nome": ["São Paulo"], "sigla_uf": ["SP"], "nome_uf": ["São Paulo"],

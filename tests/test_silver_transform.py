@@ -1,12 +1,21 @@
 import pandas as pd
 
 from pipeline.process_silver.transform import (
+    decodificar_rede,
     enriquecer_com_geografia,
     integrar_resultado_com_meta,
     padronizar_id_municipio,
     preencher_valores_ausentes_numericos,
     remover_linhas_duplicadas,
 )
+
+
+def test_decodificar_rede_traduz_codigo_para_texto():
+    df = pd.DataFrame({"rede": ["3", "2", 4]})
+
+    resultado = decodificar_rede(df)
+
+    assert resultado["rede"].tolist() == ["Municipal", "Estadual", "Privada"]
 
 
 def test_remover_linhas_duplicadas_mantem_a_primeira_ocorrencia():
