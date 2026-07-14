@@ -41,6 +41,16 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
   + Cloud Monitoring nativos do GCP para métricas de execução, erros e um alerta simples
   por e-mail em caso de falha. Baixo esforço já que vem de graça com Cloud
   Functions/Pub-Sub.
+- Usuário pediu para eu explicar cada arquivo novo antes de escrever o código, e
+  comentar o código-fonte — ajuste de estilo de comunicação salvo em memória (não é
+  o padrão default de "sem comentários"), válido para o resto deste projeto.
+- **Task 5 concluída:** `pipeline/common/gcs_utils.py` implementado com TDD (4 testes)
+  — funções de leitura/escrita de Parquet no GCS com convenção de camadas
+  (`dt=`/`latest`), comentado.
+- **Task 6 concluída:** `pipeline/common/bq_utils.py` implementado com TDD (2 testes)
+  — query no BigQuery público e carga de DataFrame como tabela. Branch
+  `feature/common-utils` (PR #2) mergeada em `main` (branch mantida, sem
+  `--delete-branch`).
 - Decisão: seção "Aplicação em IA" do README será **apenas documentada** (sem treinar
   modelo de fato). O desafio pede para explicar o potencial de uso da camada Gold, não
   exige o modelo em si — mantém o foco no que é obrigatório: a pipeline.
