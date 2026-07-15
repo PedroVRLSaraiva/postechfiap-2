@@ -258,3 +258,10 @@ Registro cronológico de todas as decisões e passos tomados no desenvolvimento 
   ~R$0,00, 23 testes automatizados passando, 8 Pull Requests mergeadas em `main`
   (branches preservadas), e README + roteiro de vídeo prontos. Falta apenas o
   usuário gravar e entregar o vídeo.
+- **Pós-entrega:** vídeo executivo gravado (375 MB — acima do limite de 100 MB do
+  GitHub) e hospedado no Google Drive; link adicionado no topo do README. A pasta
+  `docs/` (PDF do desafio, specs, plano de execução, roteiro do vídeo) foi retirada
+  do controle de versão do Git a pedido do usuário (mantida só localmente,
+  adicionada ao `.gitignore`) — README ajustado para remover as referências a esses
+  arquivos. Commit feito com mensagem genérica ("adição do vídeo e ajustes finais
+  de organização"), a pedido explícito do usuário.
