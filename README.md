@@ -5,6 +5,10 @@ implementada de ponta a ponta no Google Cloud Platform, que integra dados públi
 do Indicador Criança Alfabetizada para apoiar análises sobre alfabetização infantil
 no Brasil.
 
+## Vídeo executivo
+
+[Assista à apresentação executiva do projeto](https://drive.google.com/file/d/19tn9dVYyO0q19eisqMMk_5FLHEn-v0Yw/view?usp=sharing)
+
 ## Contexto do problema
 
 A alfabetização na infância é um dos pilares fundamentais para o desenvolvimento
@@ -237,11 +241,6 @@ disponível.
 ## Estrutura do repositório
 
 ```
-├── docs/
-│   ├── [IAST] - Tech Challenge - Fase 2.pdf   (enunciado do desafio)
-│   └── superpowers/
-│       ├── specs/    (spec de design da pipeline)
-│       └── plans/    (plano de execução passo a passo)
 ├── pipeline/
 │   ├── common/            (gcs_utils.py, bq_utils.py — testados uma vez, copiados
 │   │                        para dentro de cada função antes do deploy)
@@ -286,7 +285,5 @@ gcloud config set project SEU_PROJECT_ID
 pytest -v
 ```
 
-Os detalhes completos de setup do GCP (criação de projeto, bucket, dataset,
-tópico, deploy de cada Cloud Function) estão documentados passo a passo em
-`docs/superpowers/plans/2026-07-13-pipeline-alfabetizacao-plan.md`, e o histórico
-de cada decisão e descoberta feita durante o desenvolvimento está em `logbook.md`.
+O histórico completo de cada decisão e descoberta feita durante o desenvolvimento
+está registrado em `logbook.md`.

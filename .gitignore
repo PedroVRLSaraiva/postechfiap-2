@@ -19,3 +19,7 @@ service-account*.json
 
 # Material de aula (não é documentação do projeto)
 docs/FIAP_Fase2_DataPrepare_Transcricoes.txt
+
+# Documentação interna de planejamento (specs, plans, PDF do desafio, roteiro do
+# vídeo) — mantida só localmente, não faz parte do repositório público
+docs/
